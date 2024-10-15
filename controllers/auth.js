@@ -22,7 +22,26 @@ const registerHandler = async (req, res) => {
   // TODO : Register user
 };
 
+const verifyTokenHandler = (req, res) => {
+  const token = req.body.token || req.headers["authorization"];
+  
+  if (!token) {
+    return res.status(400).json({ message: "Token is required" });
+  }
+
+  try {
+    const decoded = jwtHelper.verifyToken(token);
+    return res.status(200).json({ message: "Token is valid", decoded });
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token has expired" });
+    }
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
 module.exports = {
   loginHandler,
   registerHandler,
+  verifyTokenHandler,
 };
