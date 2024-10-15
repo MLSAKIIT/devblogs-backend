@@ -12,6 +12,8 @@ app.use(express.json());
 // routes
 app.use("/auth", authRoute);
 
+app.use(errorHandler);
+
 // connect to the database
 mongoose
   .connect("mongodb://localhost:27017/express-auth", {
