@@ -8,6 +8,16 @@ const loginHandler = async (req, res) => {
 
     const user = User.findOne({ email });
     // TODO : verify user
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Verify the password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
 
     const token = jwtHelper.createToken({ email: user.email });
     res.status(200).json({ token });
