@@ -28,8 +28,33 @@ const loginHandler = async (req, res) => {
 };
 
 const registerHandler = async (req, res) => {
-  const { email, password } = req.body;
-  // TODO : Register user
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+    const findUser=await User.findOne({email});
+    if(findUser){
+      return res.status(403).json({message:"User Already exists"})
+    }
+    let hashedPassword;
+    try {
+      hashedPassword = await bcrypt.hash(password, 12);
+    } catch (error) {
+      console.error("Error hashing password:", error);
+      return res.status(500).json({ message: "Error hashing password" });
+    }
+
+    const newUser=new User({
+      email,
+      password:hashedPassword
+    })
+    await newUser.save();
+    return res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const verifyTokenHandler = (req, res) => {
