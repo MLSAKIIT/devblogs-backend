@@ -1,5 +1,4 @@
-const PORT = 3000;
-
+require("dotenv").config()
 const express = require("express");
 const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
@@ -24,11 +23,12 @@ app.use(
 // routes
 app.use("/auth", authRoute);
 
-app.use(errorHandler);
+
+const PORT = process.env.PORT
 
 // connect to the database
 mongoose
-  .connect("mongodb://localhost:27017/express-auth", {
+  .connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -40,6 +40,6 @@ mongoose
   });
 
 // start the server
-app.listen(PORT, () => {
-  console.log("Server is running on port" + PORT);
+app.listen( PORT || 3000, () => { // IF THE
+  console.log(`Server is running on port ${PORT}`);
 });
