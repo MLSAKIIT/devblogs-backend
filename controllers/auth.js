@@ -1,25 +1,30 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwtHelper = require("../utils/jwtHelper");
-
+const Joi=require("joi");
 const loginHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    const user = User.findOne({ email });
-    // TODO : verify user
-    if (!user) {
-      return res.status(400).json({ message: "Invalid email or password" });
+    const schema = Joi.object().keys({
+      email: Joi.string().email().required(),
+      password: Joi.string().min(8).required(),
+    });
+    const { error } = schema.validate({ email, password });
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
     }
 
-    // Verify the password
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
-
-
     const token = jwtHelper.createToken({ email: user.email });
+
     res.status(200).json({ token });
   } catch (error) {
     console.error(error);
@@ -29,32 +34,39 @@ const loginHandler = async (req, res) => {
 
 const registerHandler = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+    const { email, password, name } = req.body;
+    const schema = Joi.object().keys({
+      email: Joi.string().email().required(),
+      password: Joi.string().min(8).required(),
+      name:Joi.string().required()
+    });
+    const { error } = schema.validate({ email, password });
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
     }
-    const findUser=await User.findOne({email});
-    if(findUser){
-      return res.status(403).json({message:"User Already exists"})
+    if (!email || !password || !name) {
+      return res.status(400).json({ message: "Kindly provide email,name or password" });
     }
-    let hashedPassword;
-    try {
-      hashedPassword = await bcrypt.hash(password, 12);
-    } catch (error) {
-      console.error("Error hashing password:", error);
-      return res.status(500).json({ message: "Error hashing password" });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        return res.status(409).send({
+            message: "Email is already in use"
+        });
     }
-
-    const newUser=new User({
-      email,
-      password:hashedPassword
-    })
+    // req.session.tempUser = { name, email, password };
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+    const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
-    return res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
+const token = jwtHelper.createToken({ email:email });
+res.status(200).json({ token, user: newUser });
+    // Send a response indicating that OTP was sent
+    // res.status(200).send({ message: "OTP sent. Please verify to complete registration." });
+} catch (error) {
+    next(error);
+}
+  
+  // TODO : Register user
 };
 
 const verifyTokenHandler = (req, res) => {
