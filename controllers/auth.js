@@ -1,8 +1,8 @@
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwtHelper = require("../utils/jwtHelper");
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
+import { createToken, verifyToken } from '../utils/jwtHelper.js';
 
-const loginHandler = async (req, res) => {
+export const loginHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -28,7 +28,7 @@ const loginHandler = async (req, res) => {
   }
 };
 
-const registerHandler = async (req, res) => {
+export const registerHandler = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
@@ -60,7 +60,7 @@ const registerHandler = async (req, res) => {
   }
 };
 
-const verifyTokenHandler = (req, res) => {
+export const verifyTokenHandler = (req, res) => {
   const token = req.body.token || req.headers["authorization"];
 
   if (!token) {
@@ -76,10 +76,4 @@ const verifyTokenHandler = (req, res) => {
     }
     return res.status(401).json({ message: "Invalid token" });
   }
-};
-
-module.exports = {
-  loginHandler,
-  registerHandler,
-  verifyTokenHandler,
 };

@@ -1,8 +1,6 @@
-const express = require("express");
-const { verifyTokenHandler } = require("../controllers/auth");
+import express from 'express';
+import { verifyTokenHandler } from '../controllers/auth.js';
 
-const router = express.Router();
+export const router = express.Router();
 
 router.post("/verify", verifyTokenHandler);
-
-module.exports = router;
