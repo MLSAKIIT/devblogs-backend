@@ -1,10 +1,10 @@
-require("dotenv").config()
-const express = require("express");
-const mongoose = require("mongoose");
-const authRoute = require("./routes/auth");
-const cors = require('cors');
-const morgan = require("morgan");
-const limiter = require("./utils/rateLimit");
+import 'dotenv/config';
+import express from 'express';
+import mongoose from "mongoose";
+import authRoute from './routes/auth.js';
+import cors from 'cors';
+import morgan from 'morgan';
+import limiter from './utils/rateLimit.js';
 
 const app = express();
 

@@ -1,4 +1,4 @@
-const Blogs = require("../models/blog");
+import Blogs from '../models/blog.js';
 
 const getBlogs = async (req, res) => {
   try {

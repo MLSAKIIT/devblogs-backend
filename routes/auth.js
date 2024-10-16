@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 
-const { loginHandler, registerHandler } = require("../controllers/auth");
+import { loginHandler, registerHandler } from '../controllers/auth.js';
 
 const router = express.Router();
 
@@ -12,4 +12,4 @@ router.post("/register", (req, res) => {
   registerHandler(req, res);
 });
 
-module.exports = router;
+export default router;
