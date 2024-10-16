@@ -1,5 +1,5 @@
-const Blogs = require("../models/Blogs");
-const User = require("../models/User")
+import Blogs from '../models/Blogs.js';
+import User from '../models/User.js'
 
 const getBlogs = async (req, res) => {
   try {
@@ -108,7 +108,7 @@ const deleteBlog = async (req, res) => {
   }
 };
 
-module.exports ={
+export{
   getBlogs,
   createBlog,
   getBlog,

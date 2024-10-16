@@ -1,8 +1,8 @@
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwtHelper = require("../utils/jwtHelper");
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
+import { createToken, verifyToken } from '../utils/jwtHelper.js';
 
-const loginHandler = async (req, res) => {
+export const loginHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -18,39 +18,41 @@ const loginHandler = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-
     const token = jwtHelper.createToken({ email: user.email });
-    res.status(200).json({ token });
+    return res
+      .status(200)
+      .json({ message: "User Logged In Successfully", token });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-const registerHandler = async (req, res) => {
+export const registerHandler = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    if (!email || !password || !username) {
-      return res.status(400).json({ message: "Email and password are required" });
-    }
-    const findUser=await User.findOne({email});
-    if(findUser){
-      return res.status(403).json({message:"User Already exists"})
-    }
-    let hashedPassword;
-    try {
-      hashedPassword = await bcrypt.hash(password, 12);
-    } catch (error) {
-      console.error("Error hashing password:", error);
-      return res.status(500).json({ message: "Error hashing password" });
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "Some fields are missing" });
     }
 
-    const newUser=new User({
+    const findUser = await User.findOne({ email });
+    if (findUser) {
+      return res.status(403).json({ message: "User Already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    if (!hashedPassword) {
+      return res.status(500).json({ message: "Error in hashing password" });
+    }
+
+    const newUser = new User({
       username,
       email,
-      password:hashedPassword
-    })
+      password: hashedPassword,
+    });
+
     await newUser.save();
+
     return res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error(error);
@@ -58,9 +60,9 @@ const registerHandler = async (req, res) => {
   }
 };
 
-const verifyTokenHandler = (req, res) => {
+export const verifyTokenHandler = (req, res) => {
   const token = req.body.token || req.headers["authorization"];
-  
+
   if (!token) {
     return res.status(400).json({ message: "Token is required" });
   }
@@ -74,10 +76,4 @@ const verifyTokenHandler = (req, res) => {
     }
     return res.status(401).json({ message: "Invalid token" });
   }
-};
-
-module.exports = {
-  loginHandler,
-  registerHandler,
-  verifyTokenHandler,
 };
