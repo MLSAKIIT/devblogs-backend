@@ -70,8 +70,6 @@ const updateBlog = async (req, res) => {
       res.status(404).json({message:"blog not found with specified id"})
     }
 
-    console.log("Current Blog:", blog);
-    console.log("Update Values:", { title, content });
     updatedBlog = await Blogs.findByIdAndUpdate(
       id,
       {
@@ -82,7 +80,6 @@ const updateBlog = async (req, res) => {
       },
       { new: true}
     );
-    console.log({updatedBlog});
     
 
     return res.status(200).json({updatedBlog})
