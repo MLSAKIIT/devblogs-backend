@@ -6,7 +6,7 @@ const loginHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
     // TODO : verify user
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
@@ -29,8 +29,8 @@ const loginHandler = async (req, res) => {
 
 const registerHandler = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, email, password } = req.body;
+    if (!email || !password || !username) {
       return res.status(400).json({ message: "Email and password are required" });
     }
     const findUser=await User.findOne({email});
@@ -46,6 +46,7 @@ const registerHandler = async (req, res) => {
     }
 
     const newUser=new User({
+      username,
       email,
       password:hashedPassword
     })

@@ -6,4 +6,4 @@ const blogsSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
-module.exports = mongoose.model("Blog", blogSchema);
+module.exports = mongoose.model("Blog", blogsSchema);

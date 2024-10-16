@@ -4,12 +4,8 @@ const { loginHandler, registerHandler } = require("../controllers/auth");
 
 const router = express.Router();
 
-router.post("/login", (req, res) => {
-  loginHandler(req, res);
-});
+router.post("/login", loginHandler);
 
-router.post("/register", (req, res) => {
-  registerHandler(req, res);
-});
+router.post("/register", registerHandler);
 
 module.exports = router;
