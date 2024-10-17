@@ -18,7 +18,7 @@ export const loginHandler = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = jwtHelper.createToken({ email: user.email });
+    const token = createToken({ email: user.email });
     return res
       .status(200)
       .json({ message: "User Logged In Successfully", token });
@@ -31,9 +31,6 @@ export const loginHandler = async (req, res) => {
 export const registerHandler = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "Some fields are missing" });
-    }
 
     const findUser = await User.findOne({ email });
     if (findUser) {
@@ -68,7 +65,7 @@ export const verifyTokenHandler = (req, res) => {
   }
 
   try {
-    const decoded = jwtHelper.verifyToken(token);
+    const decoded = verifyToken(token);
     return res.status(200).json({ message: "Token is valid", decoded });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
