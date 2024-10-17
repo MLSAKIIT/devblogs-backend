@@ -7,12 +7,17 @@ import {
   deleteBlog,
 } from '../controllers/blog.js';
 
+import { verifyTokenMiddleware } from '../middlewares/authMiddleware';
+
+
 const router = express.Router();
 
 router.get("/blogs", getBlogs);
 router.get("/blogs/:id",getBlog) // to get a specific blog with id
-router.post("/create",createBlog)
+router.post("/create", verifyTokenMiddleware, createBlog);
 router.put("/update/:id",updateBlog)
 router.delete("/delete/:id",deleteBlog)
 
+
 export default router;
+
