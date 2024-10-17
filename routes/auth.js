@@ -4,12 +4,12 @@ import { loginHandler, registerHandler } from '../controllers/auth.js';
 
 const router = express.Router();
 
-router.post("/login", (req, res) => {
-  loginHandler(req, res);
-});
+router.post("/login", loginHandler);
+
 
 router.post("/register", validateRequest(registerSchema), (req, res) => {
   registerHandler(req, res);
 });
+
 
 export default router;

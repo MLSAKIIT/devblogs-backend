@@ -5,27 +5,19 @@ import {
   getBlog,
   updateBlog,
   deleteBlog,
-} from ('../controllers/blog.js');
+} from '../controllers/blog.js';
+
 import { verifyTokenMiddleware } from '../middlewares/authMiddleware';
+
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  getBlogs(req, res);
-});
+router.get("/blogs", getBlogs);
+router.get("/blogs/:id",getBlog) // to get a specific blog with id
+router.post("/create", verifyTokenMiddleware, createBlog);
+router.put("/update/:id",updateBlog)
+router.delete("/delete/:id",deleteBlog)
 
-router.get("/:id", (req, res) => {
-  getBlog(req, res);
-});
 
-router.post("/", verifyTokenMiddleware, (req, res) => {
-  createBlog(req, res);
-});
+export default router;
 
-router.put("/:id", (req, res) => {
-  updateBlog(req, res);
-});
-
-router.delete("/:id", (req, res) => {
-  deleteBlog(req, res);
-});
