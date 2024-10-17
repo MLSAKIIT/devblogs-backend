@@ -5,26 +5,14 @@ import {
   getBlog,
   updateBlog,
   deleteBlog,
-} from ('../controllers/blog.js');
+} from '../controllers/blog.js';
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  getBlogs(req, res);
-});
+router.get("/blogs", getBlogs);
+router.get("/blogs/:id",getBlog) // to get a specific blog with id
+router.post("/create",createBlog)
+router.put("/update/:id",updateBlog)
+router.delete("/delete/:id",deleteBlog)
 
-router.get("/:id", (req, res) => {
-  getBlog(req, res);
-});
-
-router.post("/", (req, res) => {
-  createBlog(req, res);
-});
-
-router.put("/:id", (req, res) => {
-  updateBlog(req, res);
-});
-
-router.delete("/:id", (req, res) => {
-  deleteBlog(req, res);
-});
+export default router;

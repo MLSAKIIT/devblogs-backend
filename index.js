@@ -22,8 +22,14 @@ app.use(
 app.use(morgan("dev"));
 
 app.use(limiter);
+
+
 // routes
+
+import blogRoute from './routes/blog.js'
+
 app.use("/auth", authRoute);
+app.use("/",blogRoute)
 
 const PORT = process.env.PORT ?? 3000
 
