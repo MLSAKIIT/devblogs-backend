@@ -6,6 +6,7 @@ import {
   updateBlog,
   deleteBlog,
 } from ('../controllers/blog.js');
+import { verifyTokenMiddleware } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.get("/:id", (req, res) => {
   getBlog(req, res);
 });
 
-router.post("/", (req, res) => {
+router.post("/", verifyTokenMiddleware, (req, res) => {
   createBlog(req, res);
 });
 

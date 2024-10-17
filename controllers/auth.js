@@ -18,7 +18,7 @@ export const loginHandler = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = jwtHelper.createToken({ email: user.email });
+    const token = jwtHelper.createToken({ email: user.email ,  userId: user.username});
     return res
       .status(200)
       .json({ message: "User Logged In Successfully", token });
