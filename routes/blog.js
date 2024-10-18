@@ -7,7 +7,7 @@ import {
   deleteBlog,
 } from '../controllers/blog.js';
 
-import { verifyTokenMiddleware } from '../middlewares/authMiddleware';
+import { verifyTokenMiddleware } from '../middlewares/verifyTokenMiddleware.js';
 
 
 const router = express.Router();
