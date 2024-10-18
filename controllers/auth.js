@@ -1,15 +1,19 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { createToken, verifyToken } from "../utils/jwtHelper.js";
+const Joi = require('joi')
 
 export const loginHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required" });
+    const schema = Joi.object().keys({
+      email: Joi.string().email().required(),
+      password: Joi.string().min(8).required(),
+    });
+    const { error } = schema.validate({ email, password });
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
     }
 
     const user = await User.findOne({ email });
