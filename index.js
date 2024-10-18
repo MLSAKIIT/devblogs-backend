@@ -23,6 +23,10 @@ app.use(morgan("dev"));
 
 app.use(limiter);
 
+//health-check
+app.get("/health",(_,res)=>{
+  res.status(200).send("Everything is fine");
+})
 
 // routes
 
