@@ -86,3 +86,49 @@ export const verifyTokenHandler = (req, res) => {
     return res.status(401).json({ message: "Invalid token" });
   }
 };
+
+export const changePasswordHandler = async (req, res) => {
+  try {
+    const { userId } = req.userId;
+    const { currentPassword, newPassword } = req.body;
+
+    // Validate input
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Current and new passwords are required" });
+    }
+
+    // Find the user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify the current password
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isCurrentPasswordValid) {
+      return res.status(401).json({ message: "Invalid current password" });
+    }
+
+    // Ensure the new password isn't the same as the old password
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({ message: "New password cannot be the same as the current password" });
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+    if (!hashedNewPassword) {
+      return res.status(500).json({ message: "Error in hashing new password" });
+    }
+
+    // Update the password in the database
+    user.password = hashedNewPassword;
+    await user.save();
+
+    return res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error("Change Password Error:", error);
+    return res.status(500).json({ message: "An error occurred while changing password" });
+  }
+};
+
