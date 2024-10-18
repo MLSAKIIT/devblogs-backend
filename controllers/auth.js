@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { createToken, verifyToken } from "../utils/jwtHelper.js";
-const Joi = require('joi')
+import Joi from 'joi';
 
 export const loginHandler = async (req, res) => {
   try {
