@@ -51,6 +51,27 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
    ```
 6. The backend should now be running, typically on http://localhost:3000.
 
+## Installation with Docker
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/MLSAKIIT/devblogs-backend.git
+   ```
+
+2. Navigate to the project directory:
+   ```bash
+   cd devblogs-backend
+   ```
+
+3. Configure your .env file:
+
+   *Before running Docker, ensure you have correctly set up your environment variables.*
+
+4. Run the following command to start the application:
+   ```bash
+   docker compose up -d   
+   ```
+
 ## Folder Structure
 
 ```
