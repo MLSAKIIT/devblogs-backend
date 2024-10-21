@@ -10,6 +10,7 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
 - MongoDB for database management
 - Mongoose for MongoDB object modeling
 - JSON Web Tokens (JWT) for authentication
+- Swagger for API documentation
 
 ## Features
 
@@ -19,6 +20,7 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
 4. Request body validation
 5. Rate limiting
 6. CORS protection
+7. API documentation with Swagger
 
 ## Prerequisites
 
@@ -50,6 +52,7 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
    yarn dev
    ```
 6. The backend should now be running, typically on http://localhost:3000.
+7. Access the Swagger documentation at http://localhost:3000/api-docs.
 
 ## Installation with Docker
 
@@ -99,7 +102,7 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
 - `/get-featured-blog`: Retrieve featured blog posts
 - `/verify`: Verify JWT token
 
-For detailed API documentation, refer to the Swagger documentation (to be implemented).
+For detailed API documentation, refer to the Swagger UI at `/api-docs` when the server is running.
 
 ## Contributing
 
@@ -151,3 +154,7 @@ Check the main project documentation for a list of current issues and tasks for 
   - https://www.turing.com/kb/how-to-master-express-js-error-handling
 - Middlewares:
   - https://www.geeksforgeeks.org/middleware-in-express-js/
+- Swagger Documentation:
+  - https://swagger.io/docs/specification/about/
+  - https://www.npmjs.com/package/swagger-ui-express
+  - https://www.npmjs.com/package/swagger-jsdoc
