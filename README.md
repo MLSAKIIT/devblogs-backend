@@ -79,28 +79,38 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
 
 ```
 .
-├── controllers/
-│   └── auth.js
-├── index.js
-├── models/
-│   ├── Blogs.js
-│   └── User.js
-├── package.json
-├── routes/
-│   ├── auth.js
-│   └── blog.js
-└── utils/
-    └── jwtHelper.js
+└── src/
+    ├── controllers/
+    │   ├── auth.js
+    │   └── blog.js
+    ├── index.js
+    ├── middlewares/
+    │   ├── errorHandler.js
+    │   └── verifyTokenMiddleware.js
+    ├── models/
+    │   ├── Blogs.js
+    │   └── User.js
+    ├── routes/
+    │   ├── auth.js
+    │   ├── blog.js
+    │   └── verify.js
+    ├── utils/
+    │   ├── jwtHelper.js
+    │   └── rateLimit.js
+    └── validators/
+        ├── login.js
+        └── register.js
 ```
 
 ## API Routes
 
 - `/register`: User registration
 - `/login`: User login
+- `/verify`: Verify JWT token
+- `/change-password`: Change user password
 - `/get-blogs`: Retrieve blog posts (with pagination)
 - `/create-blog`: Create a new blog post (protected route)
 - `/get-featured-blog`: Retrieve featured blog posts
-- `/verify`: Verify JWT token
 
 For detailed API documentation, refer to the Swagger UI at `/api-docs` when the server is running.
 
