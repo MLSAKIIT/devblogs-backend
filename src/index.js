@@ -8,6 +8,7 @@ import morgan from "morgan";
 import limiter from "./utils/rateLimit.js";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import { notFoundMiddleware } from "./middlewares/notFoundMiddleware.js";
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.get("/health", (_, res) => {
 // Routes
 app.use("/auth", authRoute);
 app.use("/", blogRoute);
+app.use(notFoundMiddleware)
 
 const PORT = process.env.PORT || 3000;
 
