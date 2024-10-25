@@ -1,20 +1,21 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { createToken, verifyToken } from "../utils/jwtHelper.js";
+import { CustomError } from "../utils/customError.js";
 
-export const loginHandler = async (req, res) => {
+export const loginHandler = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throw new CustomError("User not found",404)
     }
 
     // Verify the password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid password" });
+      throw new CustomError("Invalid password",401)
     }
 
     const token = createToken({ userId: user._id, email: user.email });
@@ -30,22 +31,22 @@ export const loginHandler = async (req, res) => {
 
   } catch (error) {
     console.error("Login error:", error);
-    return res.status(500).json({ message: "An error occurred during login" });
+    next(error);
   }
 };
 
-export const registerHandler = async (req, res) => {
+export const registerHandler = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
     const findUser = await User.findOne({ email });
     if (findUser) {
-      return res.status(403).json({ message: "User Already exists" });
+      throw new CustomError("User Already exists", 403)
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
     if (!hashedPassword) {
-      return res.status(500).json({ message: "Error in hashing password" });
+      throw new CustomError("Error in hashing password")
     }
 
     const newUser = new User({
@@ -59,15 +60,15 @@ export const registerHandler = async (req, res) => {
     return res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };
 
-export const verifyTokenHandler = (req, res) => {
+export const verifyTokenHandler = (req, res, next) => {
   const token = req.body.token || req.headers["authorization"];
 
   if (!token) {
-    return res.status(400).json({ message: "Token is required" });
+    throw new CustomError("Token is required",400)
   }
 
   try {
@@ -75,44 +76,45 @@ export const verifyTokenHandler = (req, res) => {
     return res.status(200).json({ message: "Token is valid", decoded });
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "Token has expired" });
+      next(error);
     }
-    return res.status(401).json({ message: "Invalid token" });
+    error = new CustomError("Invalid token", 401);
+    next(error);
   }
 };
 
-export const changePasswordHandler = async (req, res) => {
+export const changePasswordHandler = async (req, res, next) => {
   try {
     const { userId } = req.userId;
     const { currentPassword, newPassword } = req.body;
 
     // Validate input
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ message: "Current and new passwords are required" });
+      throw new CustomError("Current and new passwords are required",400)
     }
 
     // Find the user
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throw new CustomError("User not found", 404)
     }
 
     // Verify the current password
     const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
     if (!isCurrentPasswordValid) {
-      return res.status(401).json({ message: "Invalid current password" });
+      throw new CustomError("Invalid current password",401)
     }
 
     // Ensure the new password isn't the same as the old password
     const isSamePassword = await bcrypt.compare(newPassword, user.password);
     if (isSamePassword) {
-      return res.status(400).json({ message: "New password cannot be the same as the current password" });
+      throw new CustomError("New password cannot be the same as the current password", 400)
     }
 
     // Hash the new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 12);
     if (!hashedNewPassword) {
-      return res.status(500).json({ message: "Error in hashing new password" });
+      throw new CustomError("Error in hashing new password")
     }
 
     // Update the password in the database
@@ -122,7 +124,7 @@ export const changePasswordHandler = async (req, res) => {
     return res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
     console.error("Change Password Error:", error);
-    return res.status(500).json({ message: "An error occurred while changing password" });
+    next(error);
   }
 };
 

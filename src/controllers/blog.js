@@ -1,44 +1,45 @@
 import Blogs from '../models/Blogs.js';
 import User from '../models/User.js'
+import { CustomError } from '../utils/customError.js';
 
-const getBlogs = async (req, res) => {
+const getBlogs = async (req, res, next) => {
   try {
     
     const blogs = await Blogs.find().populate('user','username');
     if(!blogs){
-      res.status(500).json({message:"something went wrong fetching the blogs"})
+      throw new CustomError("something went wrong fetching the blogs")
     }
     return   res.status(200).json({blogs:blogs})
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };
 
-const getBlog = async (req, res) => {
+const getBlog = async (req, res, next) => {
   const { id } = req.params;
   try {
     
     const blog = await Blogs.findById({_id:id})
     if(!blog){
-      res.status(404).json({message:"Blog not found"})
+      throw new CustomError("Blog not found",404);
     }
     return res.status(200).json({blog:blog})
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-const createBlog = async (req, res) => {
+const createBlog = async (req, res, next) => {
   try {
     const { title, content, user } = req.body;
     
     if (!title || !content || !user){
-      res.status(400).json({error:"All fields are required"})
+      throw new CustomError("All fields are required",400)
     }
     const ExistingUser = await User.findById(user)
     if (!ExistingUser){
-      res.status(404).json({message:"user doesnt exist"})
+      throw new CustomError("user doesnt exist",404)
     }
 
     const blog = await Blogs.create({
@@ -48,29 +49,29 @@ const createBlog = async (req, res) => {
     })
 
     if (!blog){
-      res.status(500).json({message:"something went wrong"})
+      throw new CustomError("Something went wrong");
     }
     const populatedBlog = await Blogs.findById(blog._id).populate('user', 'username');
     return res.status(201).json({blog:populatedBlog})
     
   } catch (error) {
-    res.status(500).json({ "message": error.message });
+    next(error)
   }
 };
 
-const updateBlog = async (req, res) => {
+const updateBlog = async (req, res, next) => {
 
   const {id}  = req.params;
   const { title , content } = req.body;
 
   try {
 
-    blog = await Blogs.findById(id)
+    const blog = await Blogs.findById(id)
     if (!blog){
-      res.status(404).json({message:"blog not found with specified id"})
+      throw new CustomError("blog not found with specified id",404)
     }
 
-    updatedBlog = await Blogs.findByIdAndUpdate(
+    const updatedBlog = await Blogs.findByIdAndUpdate(
       id,
       {
         $set:{
@@ -85,11 +86,11 @@ const updateBlog = async (req, res) => {
     return res.status(200).json({updatedBlog})
 
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-const deleteBlog = async (req, res) => {
+const deleteBlog = async (req, res, next) => {
 
   const { id } = req.params;
 
@@ -97,14 +98,14 @@ const deleteBlog = async (req, res) => {
     
     const blog = await Blogs.findById(id)
     if(!blog){
-      res.status(404).json({message:"blog with the id not found"})
+      throw new CustomError("blog with the id not found",404)
     }
     const DeletedBlog = await Blogs.findByIdAndDelete(id)
     
     return res.status(200).json({message:"blog deleted sucessfully",DeletedBlog})
 
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };
 
