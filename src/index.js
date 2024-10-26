@@ -54,8 +54,8 @@ app.get("/health", (_, res) => {
 });
 
 // Routes
-app.use("/api/auth", authRoute);
-app.use("/api", blogRoute);
+app.use("/auth", authRoute);
+app.use("/", blogRoute);
 app.use(notFoundMiddleware)
 app.use(errorHandler)
 
@@ -63,9 +63,9 @@ const PORT = process.env.PORT || 3000;
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`> Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
   console.log(
-    `> Swagger API documentation available at http://localhost:${PORT}/api-docs`
+    `Swagger API documentation available at http://localhost:${PORT}/api-docs`
   );
 });
 
