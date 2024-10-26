@@ -9,7 +9,9 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { notFoundMiddleware } from "./middlewares/notFoundMiddleware.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
-import {connectDatabase, seedDB} from "./db/dbConnection.js"
+import connectDatabase from "./db/dbConnection.js";
+import seedDB from "./db/seed.js";
+
 
 const app = express();
 
