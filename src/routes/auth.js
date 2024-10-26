@@ -62,13 +62,13 @@ router.post("/login", validateRequest(loginSchema), (req, res) => {
  *             required:
  *               - email
  *               - password
- *               - name
+ *               - username
  *             properties:
  *               email:
  *                 type: string
  *               password:
  *                 type: string
- *               name:
+ *               username:
  *                 type: string
  *     responses:
  *       201:
