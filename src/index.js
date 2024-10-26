@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import mongoose from "mongoose";
 import authRoute from "./routes/auth.js";
 import blogRoute from "./routes/blog.js";
 import cors from "cors";
@@ -10,6 +9,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { notFoundMiddleware } from "./middlewares/notFoundMiddleware.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import {connectDatabase, seedDB} from "./db/dbConnection.js"
 
 const app = express();
 
@@ -54,30 +54,22 @@ app.get("/health", (_, res) => {
 });
 
 // Routes
-app.use("/auth", authRoute);
-app.use("/", blogRoute);
+app.use("/api/auth", authRoute);
+app.use("/api", blogRoute);
 app.use(notFoundMiddleware)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3000;
 
-// Connect to the database
-mongoose
-  .connect(process.env.MONGODB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to the database!");
-  })
-  .catch((err) => {
-    console.log("Cannot connect to the database!", err);
-  });
-
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`> Server is running on http://localhost:${PORT}`);
   console.log(
-    `Swagger API documentation available at http://localhost:${PORT}/api-docs`
+    `> Swagger API documentation available at http://localhost:${PORT}/api-docs`
   );
 });
+
+// Connect database to app
+connectDatabase();
+// seed the database
+seedDB();

@@ -42,7 +42,7 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
    ```
 4. Set up your environment variables:
    - Create a `.env` file in the backend directory.
-   - Add necessary variables such as `MONGODB_URI` and `JWT_SECRET`.
+   - Add necessary variables such as `MONGODB_URL` and `JWT_SECRET`.
 5. Start the server:
    ```
    npm run dev
@@ -57,22 +57,24 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
 ## Installation with Docker
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/MLSAKIIT/devblogs-backend.git
    ```
 
 2. Navigate to the project directory:
+
    ```bash
    cd devblogs-backend
    ```
 
 3. Configure your .env file:
 
-   *Before running Docker, ensure you have correctly set up your environment variables.*
+   _Before running Docker, ensure you have correctly set up your environment variables._
 
 4. Run the following command to start the application:
    ```bash
-   docker compose up -d   
+   docker compose up -d
    ```
 
 ## Folder Structure
@@ -83,6 +85,8 @@ This is the backend API for DevBlogs, a Full Stack Blogging site for Developers 
     ├── controllers/
     │   ├── auth.js
     │   └── blog.js
+    ├── db/
+    │   └── dbConnection.js
     ├── index.js
     ├── middlewares/
     │   ├── errorHandler.js
@@ -125,13 +129,14 @@ We welcome contributions to improve this project! Here's how you can contribute:
 5. Open a Pull Request
 
 ## Issues & Features
+
 - User authentication with hashed passwords.
 - Input validation with `joi`.
 - Rate limiting and CORS protection.
 - Route protection using middleware.
 - Swagger for API documentation.
 - Error handling middleware.
-  
+
 Check the main project documentation for a list of current issues and tasks for the backend.
 
 ## References
