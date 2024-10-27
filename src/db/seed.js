@@ -1,8 +1,23 @@
+import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import Blogs from "../models/Blogs.js";
+import connectDatabase from "./dbConnection.js";
+
+mongoose.connection.on('connected', () => {
+    console.log('Mongoose connected to db');
+});
+mongoose.connection.on('error', (err) => {
+    console.log('Mongoose connection error: ' + err);
+});
+mongoose.connection.on('disconnected', () => {
+    console.log('Mongoose disconnected');
+});
+
 
 async function seedDB() {
+
+    await connectDatabase();
     try {
         const password = "alice123";
         const hashedPassword = await bcrypt.hash(password, 12);
@@ -19,6 +34,10 @@ async function seedDB() {
             },
             { upsert: true, new: true }
         );
+
+        if (!user) {
+            throw new Error('User could not be created or found');
+        }
 
         // Upsert for the first blog post
         const blog1 = await Blogs.updateOne(
@@ -48,7 +67,10 @@ async function seedDB() {
     } catch (error) {
         console.log("> Failed to seed DB:");
         console.error(error);
+        
+    }finally {
+        mongoose.connection.close(); // Close the connection after seeding
     }
 }
 
-export default seedDB;
+seedDB();
