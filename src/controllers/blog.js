@@ -40,20 +40,24 @@ const getBlog = async (req, res, next) => {
 
 const createBlog = async (req, res, next) => {
   try {
-    const { title, content, user } = req.body;
-
-    if (!title || !content || !user) {
+    const { title, content } = req.body;
+    if (!title || !content) {
       throw new CustomError("All fields are required", 400);
     }
-    const ExistingUser = await User.findById(user);
-    if (!ExistingUser) {
+    const user = req.userId;
+    if (!user) {
+      throw new CustomError("Not Authorized", 401);
+    }
+
+    const existingUser = await User.findById(user.userId);
+    if (!existingUser) {
       throw new CustomError("user doesnt exist", 404);
     }
 
     const blog = await Blogs.create({
       title,
       content,
-      user,
+      user: existingUser,
     });
 
     if (!blog) {
