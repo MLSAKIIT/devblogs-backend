@@ -8,6 +8,8 @@ import {
 } from "../controllers/blog.js";
 
 import { verifyTokenMiddleware } from "../middlewares/verifyTokenMiddleware.js";
+import { createBlogSchema } from "../validators/create-blog.js";
+import { validateRequest } from "../validators/register.js";
 
 const router = express.Router();
 
@@ -77,7 +79,12 @@ router.get("/blogs/:id", getBlog);
  *       401:
  *         description: Unauthorized
  */
-router.post("/create", verifyTokenMiddleware, createBlog);
+router.post(
+  "/create",
+  verifyTokenMiddleware,
+  validateRequest(createBlogSchema),
+  createBlog
+);
 
 /**
  * @swagger
